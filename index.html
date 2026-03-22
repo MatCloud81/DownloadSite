@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Logiciel — Téléchargement</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #1e1e2e;
+      --accent: #7fff6e;
+      --accent-dim: rgba(127,255,110,0.12);
+      --text: #e8e8f0;
+      --muted: #6e6e8a;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-head);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* Glow blob */
+    .glow {
+      position: fixed;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(127,255,110,0.07) 0%, transparent 70%);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+
+    /* Nav */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      animation: fadeDown 0.6s ease both;
+    }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:none} }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+    }
+    .logo span { color: var(--text); }
+
+    .nav-version {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    /* Hero */
+    .hero {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 100px 32px 60px;
+      text-align: center;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(127,255,110,0.25);
+      border-radius: 999px;
+      padding: 5px 14px;
+      margin-bottom: 28px;
+      letter-spacing: 0.08em;
+    }
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 20px;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    /* Download card */
+    .download-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 40px;
+      max-width: 580px;
+      margin: 0 auto 80px;
+      text-align: left;
+      animation: fadeUp 0.7s 0.25s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+    .download-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.5;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .file-info h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .file-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .file-icon {
+      width: 48px; height: 48px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(127,255,110,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .detail-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+    .detail-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .detail-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .btn-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--accent);
+      color: #0a0a0f;
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 12px;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      box-shadow: 0 0 0 0 rgba(127,255,110,0.4);
+    }
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(127,255,110,0.25);
+    }
+    .btn-download:active { transform: translateY(0); }
+    .btn-download svg { width: 18px; height: 18px; }
+
+    .security-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      justify-content: center;
+    }
+    .security-note svg { width: 13px; height: 13px; color: var(--accent); flex-shrink: 0; }
+
+    /* Features */
+    .features {
+      max-width: 860px;
+      margin: 0 auto 100px;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      animation: fadeUp 0.7s 0.35s ease both;
+    }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.2s ease;
+    }
+    .feature:hover { border-color: rgba(127,255,110,0.3); }
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+    .feature h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .feature p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    /* Changelog */
+    .changelog {
+      max-width: 580px;
+      margin: 0 auto 100px;
+      padding: 0 32px;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .changelog-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .changelog-item:last-child { border-bottom: none; }
+    .changelog-version {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      white-space: nowrap;
+      padding-top: 2px;
+      min-width: 48px;
+    }
+    .changelog-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .changelog-text strong { color: var(--text); font-weight: 600; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .hero { padding: 60px 20px 40px; }
+      .download-card { padding: 24px 20px; margin: 0 20px 60px; }
+      .details { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<nav>
+  <div class="logo">Mon<span>Logiciel</span></div>
+  <div class="nav-version">v1.0.0 — stable</div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="badge">Nouvelle version disponible</div>
+    <h1>Téléchargez<br /><em>MonLogiciel</em></h1>
+    <p class="subtitle">
+      Une courte description de ce que fait votre logiciel. Simple, rapide, gratuit.
+      Disponible pour Windows, macOS et Linux.
+    </p>
+  </section>
+
+  <!-- 🔧 MODIFIEZ LE LIEN href AVEC VOTRE VRAIE URL DE TÉLÉCHARGEMENT -->
+  <div class="download-card">
+    <div class="card-header">
+      <div class="file-info">
+        <h2>MonLogiciel-v1.0.0.zip</h2>
+        <div class="file-meta">Dernière mise à jour : 22 mars 2026</div>
+      </div>
+      <div class="file-icon">📦</div>
+    </div>
+
+    <div class="details">
+      <div class="detail-item">
+        <div class="detail-label">Version</div>
+        <div class="detail-value">1.0.0</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Taille</div>
+        <div class="detail-value">24 MB</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Compatibilité</div>
+        <div class="detail-value">Win / Mac / Linux</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Licence</div>
+        <div class="detail-value">Gratuit</div>
+      </div>
+    </div>
+
+    <!-- ⬇️ REMPLACEZ href="#" PAR LE VRAI LIEN DE VOTRE FICHIER -->
+    <a class="btn-download" href="#" download="MonLogiciel-v1.0.0.zip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Télécharger gratuitement
+    </a>
+
+    <div class="security-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      Fichier vérifié — sans virus, sans publicité, sans données collectées
+    </div>
+  </div>
+
+  <!-- Fonctionnalités — modifiez selon votre logiciel -->
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>Rapide</h3>
+      <p>Décrivez ici ce qui rend votre logiciel rapide ou performant.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔒</div>
+      <h3>Sécurisé</h3>
+      <p>Expliquez en quoi votre logiciel respecte la vie privée des utilisateurs.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🎯</div>
+      <h3>Simple</h3>
+      <p>Mettez en avant la facilité d'utilisation ou la prise en main rapide.</p>
+    </div>
+  </div>
+
+  <!-- Historique des versions -->
+  <div class="changelog">
+    <div class="section-label">// Historique des versions</div>
+    <div class="changelog-item">
+      <div class="changelog-version">v1.0.0</div>
+      <div class="changelog-text"><strong>Version initiale.</strong> Première publication publique du logiciel.</div>
+    </div>
+    <div class="changelog-item">
+      <div class="changelog-version">v0.9.0</div>
+      <div class="changelog-text">Correction de bugs et améliorations de stabilité avant la sortie.</div>
+    </div>
+    <div class="changelog-item">
+      <div class="changelog-version">v0.5.0</div>
+      <div class="changelog-text">Version bêta — fonctionnalités de base implémentées.</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div>© 2026 MonLogiciel — Tous droits réservés</div>
+  <div>Fait avec ♥ — Hébergé sur Vercel</div>
+</footer>
+
+</body>
+</html>
