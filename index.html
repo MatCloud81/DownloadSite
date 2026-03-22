@@ -8,7 +8,6 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-
     :root {
       --bg: #0a0a0f;
       --surface: #13131a;
@@ -31,7 +30,6 @@
       overflow-x: hidden;
     }
 
-    /* Grain overlay */
     body::before {
       content: '';
       position: fixed;
@@ -42,7 +40,6 @@
       opacity: 0.4;
     }
 
-    /* Glow blob */
     .glow {
       position: fixed;
       width: 600px; height: 600px;
@@ -55,7 +52,6 @@
     }
     @keyframes pulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
 
-    /* Nav */
     nav {
       display: flex;
       justify-content: space-between;
@@ -70,12 +66,7 @@
     }
     @keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:none} }
 
-    .logo {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--accent);
-    }
+    .logo { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
     .logo span { color: var(--text); }
 
     .nav-version {
@@ -87,7 +78,6 @@
       border-radius: 999px;
     }
 
-    /* Hero */
     .hero {
       max-width: 860px;
       margin: 0 auto;
@@ -127,10 +117,7 @@
       letter-spacing: -0.04em;
       margin-bottom: 20px;
     }
-    h1 em {
-      font-style: normal;
-      color: var(--accent);
-    }
+    h1 em { font-style: normal; color: var(--accent); }
 
     .subtitle {
       font-size: 1.05rem;
@@ -141,7 +128,6 @@
       font-weight: 400;
     }
 
-    /* Download card */
     .download-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -169,16 +155,9 @@
       align-items: flex-start;
       margin-bottom: 24px;
     }
-    .file-info h2 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .file-meta {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
+    .file-info h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+    .file-meta { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+
     .file-icon {
       width: 48px; height: 48px;
       background: var(--accent-dim);
@@ -211,11 +190,7 @@
       text-transform: uppercase;
       margin-bottom: 4px;
     }
-    .detail-value {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text);
-    }
+    .detail-value { font-size: 0.9rem; font-weight: 700; color: var(--text); }
 
     .btn-download {
       display: flex;
@@ -230,17 +205,42 @@
       font-size: 1rem;
       font-weight: 800;
       border-radius: 12px;
-      text-decoration: none;
+      border: none;
+      cursor: pointer;
       letter-spacing: -0.01em;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-      box-shadow: 0 0 0 0 rgba(127,255,110,0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
     }
-    .btn-download:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(127,255,110,0.25);
-    }
+    .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(127,255,110,0.25); }
     .btn-download:active { transform: translateY(0); }
-    .btn-download svg { width: 18px; height: 18px; }
+    .btn-download:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-download svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 99px;
+      margin-top: 12px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .progress-bar.visible { opacity: 1; }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .error-msg {
+      display: none;
+      margin-top: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #ff6e6e;
+      text-align: center;
+    }
 
     .security-note {
       display: flex;
@@ -254,7 +254,6 @@
     }
     .security-note svg { width: 13px; height: 13px; color: var(--accent); flex-shrink: 0; }
 
-    /* Features */
     .features {
       max-width: 860px;
       margin: 0 auto 100px;
@@ -272,23 +271,10 @@
       transition: border-color 0.2s ease;
     }
     .feature:hover { border-color: rgba(127,255,110,0.3); }
-    .feature-icon {
-      font-size: 1.6rem;
-      margin-bottom: 12px;
-    }
-    .feature h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .feature p {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.6;
-      font-weight: 400;
-    }
+    .feature-icon { font-size: 1.6rem; margin-bottom: 12px; }
+    .feature h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .feature p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; font-weight: 400; }
 
-    /* Changelog */
     .changelog {
       max-width: 580px;
       margin: 0 auto 100px;
@@ -318,14 +304,9 @@
       padding-top: 2px;
       min-width: 48px;
     }
-    .changelog-text {
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
+    .changelog-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
     .changelog-text strong { color: var(--text); font-weight: 600; }
 
-    /* Footer */
     footer {
       border-top: 1px solid var(--border);
       padding: 28px 48px;
@@ -365,7 +346,6 @@
     </p>
   </section>
 
-  <!-- 🔧 MODIFIEZ LE LIEN href AVEC VOTRE VRAIE URL DE TÉLÉCHARGEMENT -->
   <div class="download-card">
     <div class="card-header">
       <div class="file-info">
@@ -394,15 +374,22 @@
       </div>
     </div>
 
-    <!-- ⬇️ REMPLACEZ href="#" PAR LE VRAI LIEN DE VOTRE FICHIER -->
-      <a class="btn-download" href="https://raw.githubusercontent.com/MatCloud81/DownloadSite/main/texte.txt" download="MonLogiciel-v1.0.0.zip">
+    <button class="btn-download" id="btn" onclick="forcerTelechargement()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
-      Télécharger gratuitement
-    </a>
+      <span id="btn-label">Télécharger gratuitement</span>
+    </button>
+
+    <div class="progress-bar" id="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="error-msg" id="error-msg">
+      ⚠️ Erreur lors du téléchargement. Vérifiez l'URL du fichier.
+    </div>
 
     <div class="security-note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -412,7 +399,6 @@
     </div>
   </div>
 
-  <!-- Fonctionnalités — modifiez selon votre logiciel -->
   <div class="features">
     <div class="feature">
       <div class="feature-icon">⚡</div>
@@ -431,7 +417,6 @@
     </div>
   </div>
 
-  <!-- Historique des versions -->
   <div class="changelog">
     <div class="section-label">// Historique des versions</div>
     <div class="changelog-item">
@@ -453,6 +438,62 @@
   <div>© 2026 MonLogiciel — Tous droits réservés</div>
   <div>Fait avec ♥ — Hébergé sur Vercel</div>
 </footer>
+
+<script>
+  // ============================================================
+  // 🔧 MODIFIEZ CES DEUX LIGNES UNIQUEMENT
+  const FILE_URL  = "https://raw.githubusercontent.com/MatCloud81/DownloadSite/main/texte.txt";
+  const FILE_NAME = "texte.txt"; // nom affiché lors du téléchargement
+  // ============================================================
+
+  async function forcerTelechargement() {
+    const btn          = document.getElementById("btn");
+    const label        = document.getElementById("btn-label");
+    const progressBar  = document.getElementById("progress-bar");
+    const progressFill = document.getElementById("progress-fill");
+    const errorMsg     = document.getElementById("error-msg");
+
+    // Réinitialiser l'état
+    errorMsg.style.display = "none";
+    btn.disabled = true;
+    label.textContent = "Téléchargement en cours…";
+    progressBar.classList.add("visible");
+    progressFill.style.width = "20%";
+
+    try {
+      const reponse = await fetch(FILE_URL);
+      if (!reponse.ok) throw new Error("Fichier introuvable");
+
+      progressFill.style.width = "70%";
+      const blob = await reponse.blob();
+      progressFill.style.width = "100%";
+
+      // Créer un lien temporaire local → déclenche le vrai téléchargement
+      const lienTemp = document.createElement("a");
+      lienTemp.href = URL.createObjectURL(blob);
+      lienTemp.download = FILE_NAME;
+      document.body.appendChild(lienTemp);
+      lienTemp.click();
+      document.body.removeChild(lienTemp);
+      URL.revokeObjectURL(lienTemp.href);
+
+      label.textContent = "✓ Téléchargé !";
+      setTimeout(() => {
+        label.textContent = "Télécharger gratuitement";
+        btn.disabled = false;
+        progressBar.classList.remove("visible");
+        progressFill.style.width = "0%";
+      }, 3000);
+
+    } catch (err) {
+      errorMsg.style.display = "block";
+      label.textContent = "Télécharger gratuitement";
+      btn.disabled = false;
+      progressBar.classList.remove("visible");
+      progressFill.style.width = "0%";
+    }
+  }
+</script>
 
 </body>
 </html>
